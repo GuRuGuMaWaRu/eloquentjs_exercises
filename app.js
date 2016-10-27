@@ -3,35 +3,44 @@ function average(array) {
   return array.reduce(plus) / array.length;
 }
 
-var byName = {};
-ancestry.forEach(function(person) {
-  byName[person.name] = person;
-});
-
 // Your code here.
-// function hasKnownMother(person) {
-//   return person.mother;
-// }
+var sorted = {},
+    century = 0;
 
-// var filteredAncestry = ancestry.filter(hasKnownMother);
-// console.log(filteredAncestry.length);
-
-var mappedAncestry = ancestry.map(function(person){
-  if (person.mother) {
-    console.log(byName[person.mother]);
-	return person.born;
+ancestry.map(function(person) {
+  century = Math.ceil(person.died/100);
+  if (!sorted[century]) {
+    sorted[century] = [];
   } else {
-  	return null;
+    sorted[century].push(person.died - person.born);
   }
 });
 
-var filteredAncestry = mappedAncestry.filter(function(age){
-  if (!null) {
-    return age;
+function groupBy(arr, fn) {
+  var obj = {};
+
+  for (var i = 0, len = arr.length; i < len; i++) {
+  	var category = fn(arr[i]);
+    if (!obj[category]) {
+      obj[category] = [];
+    } else {
+      obj[category].push(arr[i]);
+    }
   }
-});
+  return obj;
+}
 
-console.log(average(filteredAncestry));
+// console.log(groupBy(ancestry, function(person) {
+//   return Math.ceil(person.died/100);
+// }));
 
+for (key in sorted) {
+  console.log(key + ": " + average(sorted[key]));
+}
 
-// → 31.2
+// → 16: 43.5
+//   17: 51.2
+//   18: 52.8
+//   19: 54.8
+//   20: 84.7
+//   21: 94
